@@ -1,0 +1,25 @@
+GET http://localhost:8080/todos
+###
+
+GET http://localhost:8080/todos/1
+###
+
+POST http://localhost:8080/todos
+Content-Type: application/json
+
+{
+  "text": "do something"
+}
+###
+
+PUT http://localhost:8080/todos/1
+Content-Type: application/json
+
+{
+  "text": "do something else"
+}
+###
+
+DELETE http://localhost:8080/todos/1
+###
+

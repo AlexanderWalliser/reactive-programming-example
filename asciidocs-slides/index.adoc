@@ -1,0 +1,93 @@
+= Reactive Programming
+Alexander Walliser
+1.0, 2021-01-07
+ifndef::sourcedir[:sourcedir: ../src/main/java]
+ifndef::imagesdir[:imagesdir: images]
+ifndef::backend[:backend: html5]
+:icons: font
+:revealjs_width: 1980
+:revealjs_height: 920
+
+== Was ist reactives Programieren?
+
+
+== Synchron vs Asynchron vs Reactive
+
+[white,source, Dart]
+----
+void sayHelloSync(String name) {
+  String hello = "Hello $name!";
+  print(hello);
+}
+
+Future sayHelloAsync(String name) async {
+  Future futureHello = Future(() => "Hello $name!");
+  print(await futureHello);
+
+}
+
+void sayHelloReactive(String name) {
+  Future futureHello = Future(() => "Hello $name!");
+  futureHello.then((value) => print(value));
+}
+----
+=== Activity Diagrams
+
+[.clearfix]
+--
+[.left]
+[plantuml,Synchrom,png]
+----
+@startuml
+start
+:Create String;
+:Print String;
+stop
+@enduml
+----
+
+[.left]
+[plantuml,Asymchron,png]
+----
+@startuml
+start
+:Create Task;
+ fork
+:Await Task;
+  fork again
+:Create String;
+  end fork
+:Print String;
+stop
+@enduml
+----
+[.left]
+[plantuml,Reactive,png]
+----
+@startuml
+start
+:Create Task;
+ fork
+stop
+  fork again
+:Create String;
+:print String;
+stop
+@enduml
+----
+--
+=== Vorteile von reactiver programmierung
+
+Kann parallel ausgeführt werden +
+Non Blocking +
+
+=== Nachteile
+
+
+
+== Reactive Datenbanken und Restservices
+
+
+== Fehler
+
+== Reactive UI
