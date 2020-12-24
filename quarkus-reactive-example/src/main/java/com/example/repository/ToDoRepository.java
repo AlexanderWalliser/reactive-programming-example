@@ -1,14 +1,14 @@
 package com.example.repository;
 
+import com.example.entities.ChangeTyp;
 import com.example.entities.ToDo;
+import com.example.entities.ToDoEvent;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.hibernate.reactive.mutiny.Mutiny;
-import org.reactivestreams.Publisher;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public class ToDoRepository {
     @Inject
     @Channel("todo-stream")
     @Broadcast
-    Emitter<ToDo> todos;
+    Emitter<ToDoEvent> todoChanges;
 
     @Inject
     Mutiny.Session mutinySession;
@@ -36,7 +36,7 @@ public class ToDoRepository {
     public Uni<Void> create(ToDo toDo) {
         if (toDo != null && toDo.getId() == null) {
             return mutinySession.persist(toDo)
-                    .onItem().transform(t ->notify(toDo))
+                    .onItem().transform(t ->notify(toDo, ChangeTyp.create))
                     .chain(mutinySession::flush);
         }
         return null;
@@ -48,7 +48,7 @@ public class ToDoRepository {
                     .onItem().ifNotNull()
                     .transformToUni((ToDo entity) -> {
                         entity.setText(toDo.getText());
-                        notify(entity);
+                        notify(entity, ChangeTyp.update);
                         return mutinySession.flush().onItem().transform(ignore -> entity);
                     });
         }
@@ -60,13 +60,13 @@ public class ToDoRepository {
                 .find(ToDo.class, id)
                 .onItem().ifNotNull()
                 .transformToUni((ToDo entity) -> mutinySession.remove(entity)
-                        .onItem().transform(t -> notify(entity))
+                        .onItem().transform(t -> notify(entity, ChangeTyp.delete))
                         .chain(mutinySession::flush));
     }
 
-    private CompletionStage<Void> notify(ToDo toDo){
+    private CompletionStage<Void> notify(ToDo toDo, ChangeTyp changeTyp){
         try{
-            return todos.send(toDo);
+            return todoChanges.send(new ToDoEvent(changeTyp, toDo.getId(),toDo.getText()));
         }catch (Exception e){
             return null;
         }
