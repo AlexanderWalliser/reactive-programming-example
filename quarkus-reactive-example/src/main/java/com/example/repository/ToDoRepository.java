@@ -36,7 +36,7 @@ public class ToDoRepository {
     public Uni<Void> create(ToDo toDo) {
         if (toDo != null && toDo.getId() == null) {
             return mutinySession.persist(toDo)
-                    .onItem().transform(t ->notify(toDo, ChangeTyp.create))
+                    .onItem().transform(t ->notify(toDo, ChangeTyp.CREATE))
                     .chain(mutinySession::flush);
         }
         return null;
@@ -48,7 +48,7 @@ public class ToDoRepository {
                     .onItem().ifNotNull()
                     .transformToUni((ToDo entity) -> {
                         entity.setText(toDo.getText());
-                        notify(entity, ChangeTyp.update);
+                        notify(entity, ChangeTyp.UPDATE);
                         return mutinySession.flush().onItem().transform(ignore -> entity);
                     });
         }
@@ -60,7 +60,7 @@ public class ToDoRepository {
                 .find(ToDo.class, id)
                 .onItem().ifNotNull()
                 .transformToUni((ToDo entity) -> mutinySession.remove(entity)
-                        .onItem().transform(t -> notify(entity, ChangeTyp.delete))
+                        .onItem().transform(t -> notify(entity, ChangeTyp.DELETE))
                         .chain(mutinySession::flush));
     }
 

@@ -8,8 +8,7 @@ class ToDoModel extends ChangeNotifier {
   List<ToDo> _toDos;
 
   List<ToDo> get toDos {
-    load();
-    return _toDos;
+    return _toDos.toList();
   }
 
   bool _isLoading = false;
@@ -21,16 +20,19 @@ class ToDoModel extends ChangeNotifier {
     EventService.connect().stream.listen((event) {
       print(event.toString());
 
-      if(event.changeType == ChangeType.create){
+      if(event.changeTyp == ChangeTyp.CREATE){
         _toDos.add(new ToDo(id: event.id,text: event.text));
+        notify();
       }
-      else if(event.changeType == ChangeType.update){
+      else if(event.changeTyp == ChangeTyp.UPDATE){
         var toDo = _toDos.firstWhere((e) => e.id == event.id);
         toDo.id = event.id;
         toDo.text = event.text;
+        notify();
       }
-      else if(event.changeType == ChangeType.delete){
+      else if(event.changeTyp == ChangeTyp.DELETE){
         _toDos.removeWhere((e) => e.id == event.id);
+        notify();
       }
     });
   }

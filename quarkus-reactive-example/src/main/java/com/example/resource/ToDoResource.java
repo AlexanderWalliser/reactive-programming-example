@@ -56,7 +56,7 @@ public class ToDoResource {
         return repository.getSingle(id)
                 .onItem()
                 .ifNotNull()
-                .transformToUni(entity -> repository.update(entity).onItem().transform(ignore -> Response.ok(entity).build()))
+                .transformToUni(entity -> repository.update(todo).onItem().transform(ignore -> Response.ok(entity).build()))
                 .onItem().ifNull()
                 .continueWith(Response.ok().status(404).build());
     }

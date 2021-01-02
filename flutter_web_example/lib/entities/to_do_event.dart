@@ -5,7 +5,7 @@ part 'to_do_event.g.dart';
 
 @JsonSerializable()
 class ToDoEvent{
-  ChangeType changeType;
+  ChangeTyp changeTyp;
   int id;
   String text;
   ToDoEvent();

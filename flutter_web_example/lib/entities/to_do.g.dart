@@ -7,9 +7,10 @@ part of 'to_do.dart';
 // **************************************************************************
 
 ToDo _$ToDoFromJson(Map<String, dynamic> json) {
-  return ToDo()
-    ..id = json['id'] as int
-    ..text = json['text'] as String;
+  return ToDo(
+    id: json['id'] as int,
+    text: json['text'] as String,
+  );
 }
 
 Map<String, dynamic> _$ToDoToJson(ToDo instance) => <String, dynamic>{

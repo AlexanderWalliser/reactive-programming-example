@@ -1,7 +1,7 @@
 package com.example.entities;
 
 public enum ChangeTyp {
-    create,
-    update,
-    delete
+    CREATE,
+    UPDATE,
+    DELETE
 }

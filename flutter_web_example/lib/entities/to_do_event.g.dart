@@ -8,13 +8,13 @@ part of 'to_do_event.dart';
 
 ToDoEvent _$ToDoEventFromJson(Map<String, dynamic> json) {
   return ToDoEvent()
-    ..changeType = _$enumDecodeNullable(_$ChangeTypeEnumMap, json['changeType'])
+    ..changeTyp = _$enumDecodeNullable(_$ChangeTypEnumMap, json['changeTyp'])
     ..id = json['id'] as int
     ..text = json['text'] as String;
 }
 
 Map<String, dynamic> _$ToDoEventToJson(ToDoEvent instance) => <String, dynamic>{
-      'changeType': _$ChangeTypeEnumMap[instance.changeType],
+      'changeTyp': _$ChangeTypEnumMap[instance.changeTyp],
       'id': instance.id,
       'text': instance.text,
     };
@@ -51,8 +51,8 @@ T _$enumDecodeNullable<T>(
   return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
 }
 
-const _$ChangeTypeEnumMap = {
-  ChangeType.create: 'create',
-  ChangeType.update: 'update',
-  ChangeType.delete: 'delete',
+const _$ChangeTypEnumMap = {
+  ChangeTyp.CREATE: 'CREATE',
+  ChangeTyp.UPDATE: 'UPDATE',
+  ChangeTyp.DELETE: 'DELETE',
 };

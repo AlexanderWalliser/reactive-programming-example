@@ -1,66 +1,31 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_web_example/entities/to_do.dart';
 import 'package:flutter_web_example/models/to_do_model.dart';
+import 'package:flutter_web_example/witgets/home.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   await longCalculationReactive();
-  runApp( MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ToDoModel()),
-      ],
-      child: MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => ToDoModel()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Reactive Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Reactive Demo'),
+      home: Home(title: 'Reactive Demo'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-
-        title: Text(widget.title),
-      ),
-      body: Consumer<ToDoModel>(
-          builder: (context, toDoModel, child) {
-            return ListView(
-              scrollDirection: Axis.vertical,
-              children: [
-                for (int i = 0; i < toDoModel.toDos.length; i++)
-                  Card(
-                    child: ListTile(
-                      contentPadding: EdgeInsets.only(left: 7),
-                      title: Text(toDoModel.toDos[i].text),
-                    ),
-                  )
-              ],
-              padding: EdgeInsets.only(top: 0),
-            );
-          }),
-    );
-  }
-}
 
 class Calc {
   static Future<int> longCalculation(int start) async {
