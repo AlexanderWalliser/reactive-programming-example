@@ -16,24 +16,36 @@ class ToDoModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   ToDoModel() : _toDos = [] {
+    _getData();
+  }
+
+  void _getData() {
     load();
-    EventService.connect().stream.listen((event) {
+    print("Connect to Stream");
+    var subscription = EventService
+        .connect()
+        .stream
+        .listen((event) {
       print(event.toString());
 
-      if(event.changeTyp == ChangeTyp.CREATE){
-        _toDos.add(new ToDo(id: event.id,text: event.text));
+      if (event.changeTyp == ChangeTyp.CREATE) {
+        _toDos.add(new ToDo(id: event.id, text: event.text));
         notify();
       }
-      else if(event.changeTyp == ChangeTyp.UPDATE){
+      else if (event.changeTyp == ChangeTyp.UPDATE) {
         var toDo = _toDos.firstWhere((e) => e.id == event.id);
         toDo.id = event.id;
         toDo.text = event.text;
         notify();
       }
-      else if(event.changeTyp == ChangeTyp.DELETE){
+      else if (event.changeTyp == ChangeTyp.DELETE) {
         _toDos.removeWhere((e) => e.id == event.id);
         notify();
       }
+    });
+    subscription.onError((_) {
+      subscription.cancel();
+      Future.delayed(Duration(seconds: 10), () => _getData());
     });
   }
 
@@ -51,13 +63,15 @@ class ToDoModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> create(ToDo toDo) async{
+  Future<bool> create(ToDo toDo) async {
     return ToDoService.create(toDo);
   }
-  Future<bool> update(ToDo toDo) async{
+
+  Future<bool> update(ToDo toDo) async {
     return ToDoService.update(toDo);
   }
-  Future<bool> delete(ToDo toDo) async{
+
+  Future<bool> delete(ToDo toDo) async {
     return ToDoService.delete(toDo.id);
   }
 

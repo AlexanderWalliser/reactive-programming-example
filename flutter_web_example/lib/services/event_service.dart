@@ -24,6 +24,7 @@ class EventService {
     if (closeOnError) {
       eventSource.onError.listen((event) {
         eventSource?.close();
+        streamController.addError(event);
         streamController?.close();
       });
     }

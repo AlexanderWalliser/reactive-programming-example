@@ -8,10 +8,16 @@ ifndef::backend[:backend: html5]
 :revealjs_width: 1980
 :revealjs_height: 920
 
-== Was ist reactives Programieren?
 
+== What is reactive Programming?
 
-== Synchron vs Asynchron vs Reactive
+Reactive programming is a declarative programming paradigm concerned with data streams and the propagation of changes.
+
+Reacting to single occurring events can also be seen as reactive programming.
+
+== Reacting to single occurring events
+
+=== Synchronous vs async/wait vs Reactive
 
 [white,source, Dart]
 ----
@@ -33,61 +39,158 @@ void sayHelloReactive(String name) {
 ----
 === Activity Diagrams
 
-[.clearfix]
---
-[.left]
-[plantuml,Synchrom,png]
+image:ReactiveExample.png[]
+
+
+//[.clearfix]
+//--
+//[.left]
+//[plantuml,Synchrom,png]
+//----
+//@startuml
+//start
+//:Create String;
+//:Print String;
+//stop
+//@enduml
+//----
+//
+//[.left]
+//[plantuml,Asymchron,png]
+//----
+//@startuml
+//start
+//:Create Task;
+// fork
+//:Await Task;
+//  fork again
+//:Create String;
+//  end fork
+//:Print String;
+//stop
+//@enduml
+//----
+//[.left]
+//[plantuml,Reactive,png]
+//----
+//@startuml
+//start
+//:Create Task;
+// fork
+//stop
+//  fork again
+//:Create String;
+//:print String;
+//stop
+//@enduml
+//----
+//--
+
+=== pros and cons
+pros: +
+can be executed parallel +
+non-blocking +
+declarative +
+better code style
+
+cons: +
+sometimes tricky to use +
+no immediate result +
+
+=== Example
+
+== Reactive streams
+
+
+
+
+=== Example
+
+== Reactive System
+
+A Reactive System is defined by the Reactive Manifesto,
+which is signed by almost 30,000 people.
+
+==== Reactive system are:
+
+* Responsive (antwortend)
+* Resilient (unverwüstlich)
+* Elastic (elastisch)
+* Message Driven (Nachrichten gesteuert)
+
+NOTE: A reactive system doesn't have to use reactive programming.
+
+https://www.reactivemanifesto.org
+
+== Reactive Database Access and REST Requests
+
+==== Similar benefits:
+non-blocking +
+low overhead +
+can be used for scaling vertically +
+
+
+=== Reactive Quarkus
+Quarkus is build reactive and uses Eclipse Vert.x.
+But, to fully benefit from this model, the application code should be written in a non-blocking manner.
+
+=== Non-Reactive-Request
+Non-reactive requests are executed on a worker-thread. Every request is processed by its own thread.
+image:http-blocking-sequence.png[]
+
+=== Reactive-Request
+Reactive requests are executed on the IO-thread having higher concurrency and performance.
+image:http-reactive-sequence.png[]
+
+=== Is Reactive Quarkus worth using for your Project?
+
+Probably not. +
+
+==== Drawbacks:
+harder to code +
+you only benefit if you get multiple simultaneous requests +
+if your code is blocking due to a coding mistake the performance is even worse
+
+NOTE: For detailed information about a worker and IO threads in Quarkus visit https://quarkus.io/blog/io-thread-benchmark/
+
+== Questions
+Each of the following code samples has an error or is bad written. +
+Can you find it?
+
+=== Example 1
+[white,source, Dart]
 ----
-@startuml
-start
-:Create String;
-:Print String;
-stop
-@enduml
+Future<int> calculateLongTask(){
+longTask().then((value) => return value);
+}
 ----
 
-[.left]
-[plantuml,Asymchron,png]
+=== Example 2
+[white,source, Dart]
 ----
-@startuml
-start
-:Create Task;
- fork
-:Await Task;
-  fork again
-:Create String;
-  end fork
-:Print String;
-stop
-@enduml
+Future<int> calculateLongTask() async{
+  return await longTask().then((value) => value + 3);
+}
 ----
-[.left]
-[plantuml,Reactive,png]
+
+=== Example 3
+[white,source, Dart]
 ----
-@startuml
-start
-:Create Task;
- fork
-stop
-  fork again
-:Create String;
-:print String;
-stop
-@enduml
+Future calculateLongTask(){
+  longTask().then((value) => print(someMoreCalculations(value)));
+}
 ----
---
-=== Vorteile von reactiver programmierung
 
-Kann parallel ausgeführt werden +
-Non Blocking +
-
-=== Nachteile
-
-
-
-== Reactive Datenbanken und Restservices
-
-
-== Fehler
 
 == Reactive UI
+
+
+== Sources
+https://itnext.io/demystifying-functional-reactive-programming-67767dbe520b
+https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
+https://www.reactivemanifesto.org/
+https://dart.dev/articles/libraries/creating-streams
+https://quarkus.io/guides/getting-started-reactive
+https://quarkus.io/guides/amqp
+https://blog.couchbase.com/why-you-should-care-about-reactive-database-access
+https://spring.io/blog/2018/12/07/reactive-programming-and-relational-databases
