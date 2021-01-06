@@ -34,12 +34,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  StreamController<int> clickStreamController;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  Stream<int> get clickStream => clickStreamController.stream;
+
+  int sum = 0;
+
+  @override
+  void initState() {
+    clickStreamController = StreamController.broadcast();
+
+    clickStream.listen((event) {
+      print("Click");
     });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    clickStreamController.close();
+    super.dispose();
   }
 
   @override
@@ -52,18 +67,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            StreamBuilder(
+                stream:clickStream.map((event) => sum += event),
+                builder: (context, snap) {
+                  return Text((snap?.data ?? 0).toString());
+                }),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () => clickStreamController.add(1),
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
@@ -186,16 +199,18 @@ void importantInformationHandler() {
 
 Future streamExample() async {
   var importantInformation =
-      importantInformationStream(); // Reactive, Declarative
+  importantInformationStream(); // Reactive, Declarative
 
   importantInformation.listen(
-      (event) => print("Listener 1 uses information " + event.toString()));
+          (event) => print("Listener 1 uses information " + event.toString()));
 
   importantInformation.where((event) => event % 2 == 0).listen((event) =>
       print("Listener 2 only uses even information " + event.toString()));
 
-  importantInformation.last.then((value) => print(
-      "Listener 3 only cares about the last information " + value.toString()));
+  importantInformation.last.then((value) =>
+      print(
+          "Listener 3 only cares about the last information " +
+              value.toString()));
 
   await importantInformation
       .last; // await stream so both examples don't run at the same time

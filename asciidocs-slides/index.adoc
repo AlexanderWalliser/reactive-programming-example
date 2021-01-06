@@ -8,18 +8,31 @@ ifndef::backend[:backend: html5]
 :revealjs_width: 1980
 :revealjs_height: 920
 
-
 == What is reactive Programming?
 
 Reactive programming is a declarative programming paradigm concerned with data streams and the propagation of changes.
+
+Similar to the observer pattern.
 
 Reacting to single occurring events can also be seen as reactive programming.
 
 == Reacting to single occurring events
 
+=== Real life Example: heating food in the microwave
+
+* Async:
+** put food in the microwave
+** wait in front of the microwave until it finishes
+** take out the food
+
+* Reactive:
+** put food in the microwave
+** do something else
+** when the microwave rings, take out the food
+
 === Synchronous vs async/wait vs Reactive
 
-[white,source, Dart]
+[source, Dart]
 ----
 void sayHelloSync(String name) {
   String hello = "Hello $name!";
@@ -29,7 +42,6 @@ void sayHelloSync(String name) {
 Future sayHelloAsync(String name) async {
   Future futureHello = Future(() => "Hello $name!");
   print(await futureHello);
-
 }
 
 void sayHelloReactive(String name) {
@@ -86,23 +98,37 @@ image:ReactiveExample.png[]
 //----
 //--
 
-=== pros and cons
-pros: +
-can be executed parallel +
-non-blocking +
-declarative +
-better code style
-
-cons: +
-sometimes tricky to use +
-no immediate result +
-
 === Example
+
+
+=== pros and cons
+pros:
+
+* can be executed parallel
+* non-blocking
+* declarative
+* better code style
+
+cons:
+
+* sometimes tricky to use
+* no immediate result
 
 == Reactive streams
 
+=== Real life Example: Restaurant
+* every time the cook finishes a meal he shouts
+* the waiter listens for shouts
+* if he hears the cook shouting, he delivers the food
 
+=== Use cases
 
+* Server sent events
+* Loading data
+* Updating UI elements on data change
+* ...
+
+In most programming languages you can use functions like map, first where, ... on reactive streams
 
 === Example
 
@@ -111,7 +137,7 @@ no immediate result +
 A Reactive System is defined by the Reactive Manifesto,
 which is signed by almost 30,000 people.
 
-==== Reactive system are:
+Reactive system are:
 
 * Responsive (antwortend)
 * Resilient (unverwüstlich)
@@ -124,10 +150,11 @@ https://www.reactivemanifesto.org
 
 == Reactive Database Access and REST Requests
 
-==== Similar benefits:
-non-blocking +
-low overhead +
-can be used for scaling vertically +
+Similar benefits:
+
+* non-blocking
+* low overhead
+* can be used for scaling vertically
 
 
 === Reactive Quarkus
@@ -146,10 +173,11 @@ image:http-reactive-sequence.png[]
 
 Probably not. +
 
-==== Drawbacks:
-harder to code +
-you only benefit if you get multiple simultaneous requests +
-if your code is blocking due to a coding mistake the performance is even worse
+Drawbacks:
+
+* harder to code
+* you only benefit if you get multiple simultaneous requests
+* if your code is blocking due to a coding mistake the performance is even worse
 
 NOTE: For detailed information about a worker and IO threads in Quarkus visit https://quarkus.io/blog/io-thread-benchmark/
 
@@ -158,7 +186,7 @@ Each of the following code samples has an error or is bad written. +
 Can you find it?
 
 === Example 1
-[white,source, Dart]
+[source, Dart]
 ----
 Future<int> calculateLongTask(){
 longTask().then((value) => return value);
@@ -166,7 +194,7 @@ longTask().then((value) => return value);
 ----
 
 === Example 2
-[white,source, Dart]
+[source, Dart]
 ----
 Future<int> calculateLongTask() async{
   return await longTask().then((value) => value + 3);
@@ -174,23 +202,22 @@ Future<int> calculateLongTask() async{
 ----
 
 === Example 3
-[white,source, Dart]
+[source, Dart]
 ----
 Future calculateLongTask(){
   longTask().then((value) => print(someMoreCalculations(value)));
 }
 ----
 
-
-== Reactive UI
-
+== Server-Client Example
 
 == Sources
-https://itnext.io/demystifying-functional-reactive-programming-67767dbe520b
-https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
-https://www.reactivemanifesto.org/
-https://dart.dev/articles/libraries/creating-streams
-https://quarkus.io/guides/getting-started-reactive
-https://quarkus.io/guides/amqp
-https://blog.couchbase.com/why-you-should-care-about-reactive-database-access
-https://spring.io/blog/2018/12/07/reactive-programming-and-relational-databases
+https://itnext.io/demystifying-functional-reactive-programming-67767dbe520b +
+https://gist.github.com/staltz/868e7e9bc2a7b8c1f754 +
+https://www.reactivemanifesto.org/ +
+https://dart.dev/articles/libraries/creating-streams +
+https://quarkus.io/guides/getting-started-reactive +
+https://quarkus.io/guides/amqp +
+https://blog.couchbase.com/why-you-should-care-about-reactive-database-access +
+https://en.wikipedia.org/wiki/Reactive_programming +
+https://spring.io/blog/2018/12/07/reactive-programming-and-relational-databases +

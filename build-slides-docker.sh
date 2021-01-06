@@ -12,7 +12,7 @@ sudo docker run --rm \
            asciidoctor/docker-asciidoctor:1.2.0 asciidoctor-revealjs \
            -r asciidoctor-diagram \
            -a icons=font \
-           -a revealjs_theme=kubernetes \
+           -a revealjs_theme=sky \
            -a source-highlighter=rouge \
            -a imagesdir=images \
            -a revealjsdir=revealjs \
